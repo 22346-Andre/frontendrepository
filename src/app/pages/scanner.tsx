@@ -287,7 +287,7 @@ export default function ScannerPDV() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             <Card className="lg:col-span-5 border-t-4 border-t-blue-600 shadow-md flex flex-col">
-              <CardHeader className="pb-3 bg-gray-50 border-b">
+              <CardHeader className="pb-3 bg-muted border-b">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Barcode className="h-5 w-5 text-blue-600" /> Leitor de Código
                 </CardTitle>
@@ -300,39 +300,39 @@ export default function ScannerPDV() {
                 <div className="relative mb-4">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input 
-                    placeholder="Pesquisar por nome ou código..." className="pl-10 h-14 text-lg bg-white border-2 border-blue-100 focus-visible:ring-blue-500 rounded-xl"
+                    placeholder="Pesquisar por nome ou código..." className="pl-10 h-14 text-lg bg-card border-2 border-blue-100 focus-visible:ring-blue-500 rounded-xl"
                     value={termoBusca} onChange={(e) => setTermoBusca(e.target.value)} onFocus={() => setInputBuscaFocado(true)} onBlur={() => setInputBuscaFocado(false)}
                   />
                 </div>
 
                 {termoBusca ? (
-                  <div className="border rounded-xl flex-1 overflow-y-auto bg-white shadow-inner p-2 max-h-[400px]">
+                  <div className="border rounded-xl flex-1 overflow-y-auto bg-card shadow-inner p-2 max-h-[400px]">
                     {produtosFiltrados.length === 0 ? (
-                      <p className="p-4 text-center text-gray-500">Nenhum produto encontrado.</p>
+                      <p className="p-4 text-center text-muted-foreground">Nenhum produto encontrado.</p>
                     ) : (
                       produtosFiltrados.map((p) => (
                         <div key={p.id} onClick={() => adicionarAoCarrinho(p)} className="p-3 mb-2 border rounded-lg hover:bg-blue-50 cursor-pointer flex justify-between items-center transition-colors">
                           <div>
-                            <p className="font-bold text-gray-800">{p.nome}</p>
-                            <p className="text-xs font-mono text-gray-500">{p.codigoBarras || 'S/N'}</p>
+                            <p className="font-bold text-foreground">{p.nome}</p>
+                            <p className="text-xs font-mono text-muted-foreground">{p.codigoBarras || 'S/N'}</p>
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-bold text-green-600">R$ {(p.precoVenda || p.precoCusto || 0).toFixed(2)}</p>
-                            <p className="text-xs text-gray-400">Estoque: {p.quantidade}</p>
+                            <p className="text-xs text-muted-foreground">Estoque: {p.quantidade}</p>
                           </div>
                         </div>
                       ))
                     )}
                   </div>
                 ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 p-6">
+                  <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-xl bg-muted p-6">
                     {scannerAtivo ? (
                       <div id="reader" className="w-full"></div>
                     ) : (
                       <div className="text-center cursor-pointer" onClick={() => setScannerAtivo(true)}>
-                        <div className="bg-white p-4 rounded-full shadow-sm inline-block mb-4"><Camera className="h-12 w-12 text-blue-500" /></div>
+                        <div className="bg-card p-4 rounded-full shadow-sm inline-block mb-4"><Camera className="h-12 w-12 text-blue-500" /></div>
                         <h3 className="font-bold text-gray-700">Scanner da Câmera</h3>
-                        <p className="text-sm text-gray-500 mt-1">Toque para ativar a câmera.<br/>A pistola USB já está ativa.</p>
+                        <p className="text-sm text-muted-foreground mt-1">Toque para ativar a câmera.<br/>A pistola USB já está ativa.</p>
                       </div>
                     )}
                     {scannerAtivo && <Button variant="outline" className="mt-4 text-red-600" onClick={() => setScannerAtivo(false)}>Fechar Câmera</Button>}
@@ -341,7 +341,7 @@ export default function ScannerPDV() {
               </CardContent>
             </Card>
 
-            <Card className="lg:col-span-7 shadow-lg border-gray-200 flex flex-col">
+            <Card className="lg:col-span-7 shadow-lg border-border flex flex-col">
               <CardHeader className="bg-gray-800 text-white rounded-t-xl pb-4">
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-xl flex items-center gap-2"><ShoppingCart className="h-6 w-6" /> Carrinho de Compras</CardTitle>
@@ -360,7 +360,7 @@ export default function ScannerPDV() {
                   ) : (
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-transparent border-b-2 border-gray-200">
+                        <TableRow className="bg-transparent border-b-2 border-border">
                           <TableHead className="w-[10%]">Item</TableHead>
                           <TableHead className="w-[40%]">Produto</TableHead>
                           <TableHead className="text-center w-[20%]">Qtd</TableHead>
@@ -372,13 +372,13 @@ export default function ScannerPDV() {
                         {carrinho.map((item, index) => {
                           const preco = item.produto.precoVenda || item.produto.precoCusto || 0;
                           return (
-                            <TableRow key={item.produto.id} className="border-b border-gray-100 bg-white">
+                            <TableRow key={item.produto.id} className="border-b border-gray-100 bg-card">
                               <TableCell className="font-mono text-xs text-gray-400">{String(index + 1).padStart(3, '0')}</TableCell>
                               <TableCell className="font-bold text-gray-700">{item.produto.nome.substring(0, 25)}</TableCell>
                               <TableCell>
-                                <div className="flex items-center justify-center border rounded-md overflow-hidden bg-gray-50">
+                                <div className="flex items-center justify-center border rounded-md overflow-hidden bg-muted">
                                   <button onClick={() => alterarQuantidade(item.produto.id, item.quantidade - 1)} className="px-2 py-1 hover:bg-gray-200 text-gray-600">-</button>
-                                  <span className="px-3 font-bold bg-white w-10 text-center">{item.quantidade}</span>
+                                  <span className="px-3 font-bold bg-card w-10 text-center">{item.quantidade}</span>
                                   <button onClick={() => alterarQuantidade(item.produto.id, item.quantidade + 1)} className="px-2 py-1 hover:bg-gray-200 text-gray-600">+</button>
                                 </div>
                               </TableCell>
@@ -396,14 +396,14 @@ export default function ScannerPDV() {
                   )}
                 </div>
 
-                <div className="bg-gray-50 border-t p-6 rounded-b-xl shadow-inner">
+                <div className="bg-muted border-t p-6 rounded-b-xl shadow-inner">
                   <div className="flex justify-between items-center mb-6">
-                    <div className="text-gray-500">
+                    <div className="text-muted-foreground">
                       <p className="text-sm font-medium">Quantidade de Itens</p>
                       <p className="text-2xl font-bold text-gray-700">{totalItens}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium text-gray-500 mb-1">TOTAL A PAGAR</p>
+                      <p className="text-sm font-medium text-muted-foreground mb-1">TOTAL A PAGAR</p>
                       <p className="text-4xl font-black text-green-600 tracking-tight">R$ {totalCarrinho.toFixed(2)}</p>
                     </div>
                   </div>
@@ -424,7 +424,7 @@ export default function ScannerPDV() {
                   </div>
                   
                   {/* 🟢 BOTÃO "CANCELAR COMPRA" RESTAURADO AQUI EM BAIXO */}
-                  <Button variant="ghost" className="w-full text-gray-500 hover:bg-gray-200 hover:text-gray-800" onClick={limparCarrinho} disabled={carrinho.length === 0}>
+                  <Button variant="ghost" className="w-full text-muted-foreground hover:bg-gray-200 hover:text-foreground" onClick={limparCarrinho} disabled={carrinho.length === 0}>
                     <XCircle className="w-4 h-4 mr-2" /> Cancelar Compra / Limpar Carrinho
                   </Button>
 
@@ -445,7 +445,7 @@ export default function ScannerPDV() {
               {carregandoHistorico ? (
                 <div className="text-center py-8">A consultar a base de dados...</div>
               ) : historicoAgrupado.length === 0 ? (
-                <div className="text-center py-12 text-gray-500 bg-gray-50 rounded-lg">Sem histórico de operações recente.</div>
+                <div className="text-center py-12 text-muted-foreground bg-muted rounded-lg">Sem histórico de operações recente.</div>
               ) : (
                 <Table>
                   <TableHeader>
@@ -460,9 +460,9 @@ export default function ScannerPDV() {
                   </TableHeader>
                   <TableBody>
                     {historicoAgrupado.slice(0, 30).map(grp => (
-                      <TableRow key={grp.chaveExibicao} className="hover:bg-gray-50">
+                      <TableRow key={grp.chaveExibicao} className="hover:bg-muted">
                         <TableCell className="whitespace-nowrap font-medium text-gray-700">{format(new Date(grp.data), "dd/MM/yyyy HH:mm")}</TableCell>
-                        <TableCell className="text-sm text-gray-500 max-w-[250px] truncate" title={grp.nomes.join(', ')}>
+                        <TableCell className="text-sm text-muted-foreground max-w-[250px] truncate" title={grp.nomes.join(', ')}>
                           {grp.nomes.join(', ')} {grp.totalItens > grp.nomes.length ? '...' : ''}
                         </TableCell>
                         <TableCell>
@@ -493,7 +493,7 @@ export default function ScannerPDV() {
 
         <TabsContent value="xml">
            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="border-2 border-dashed border-gray-300 bg-gray-50/50">
+            <Card className="border-2 border-dashed border-gray-300 bg-muted/50">
               <CardHeader>
                 <CardTitle>Enviar Documento Oficial</CardTitle>
                 <CardDescription>Arraste o arquivo XML da Nota Fiscal (NF-e)</CardDescription>
@@ -503,7 +503,7 @@ export default function ScannerPDV() {
                   <div className="w-full flex flex-col items-center cursor-pointer p-8" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current?.click()}>
                     <div className="h-20 w-20 rounded-full bg-blue-100 flex items-center justify-center mb-6"><UploadCloud className="h-10 w-10 text-blue-600" /></div>
                     <h3 className="text-lg font-semibold text-gray-700">Clique ou arraste o seu XML</h3>
-                    <p className="text-sm text-gray-500 mt-2">Apenas ficheiros terminados em .xml</p>
+                    <p className="text-sm text-muted-foreground mt-2">Apenas ficheiros terminados em .xml</p>
                   </div>
                 ) : (
                   <div className="w-full flex flex-col items-center">
@@ -555,7 +555,7 @@ export default function ScannerPDV() {
                   <TableBody>
                     {resultados.map((prod, i) => (
                       <TableRow key={i}>
-                        <TableCell className="font-mono text-gray-500 pl-6">{prod.codigoBarras}</TableCell>
+                        <TableCell className="font-mono text-muted-foreground pl-6">{prod.codigoBarras}</TableCell>
                         <TableCell className="font-medium">{prod.nome}</TableCell>
                         <TableCell className="text-right text-gray-600">R$ {prod.precoCusto.toFixed(2)}</TableCell>
                         <TableCell className="text-right pr-6"><span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">+{prod.quantidade}</span></TableCell>

@@ -132,7 +132,7 @@ export default function Configuracoes() {
             <CardHeader><CardTitle>Dados da Empresa</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>CNPJ</Label><Input value={empresaData.cnpj} disabled className="bg-gray-50 text-gray-500 cursor-not-allowed" /></div>
+                <div className="space-y-2"><Label>CNPJ</Label><Input value={empresaData.cnpj} disabled className="bg-muted text-muted-foreground cursor-not-allowed" /></div>
                 <div className="space-y-2"><Label>Razão Social</Label><Input value={empresaData.razaoSocial} onChange={e => setEmpresaData({ ...empresaData, razaoSocial: e.target.value })} /></div>
                 <div className="space-y-2"><Label>Nome Fantasia</Label><Input value={empresaData.nomeFantasia} onChange={e => setEmpresaData({ ...empresaData, nomeFantasia: e.target.value })} /></div>
                 <div className="space-y-2"><Label>E-mail</Label><Input type="email" value={empresaData.email} onChange={e => setEmpresaData({ ...empresaData, email: e.target.value })} /></div>

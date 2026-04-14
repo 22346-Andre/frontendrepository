@@ -11,8 +11,9 @@ import Scanner from './pages/scanner';
 import Configuracoes from './pages/configuracoes';
 import SugestoesCompra from './pages/sugestoes-compra';
 import Relatorios from './pages/relatorios';
-// 🚨 Importei a nova página de Perfil!
 import Perfil from './pages/Perfil';
+import Fiados from './pages/Fiados';
+
 
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -83,7 +84,10 @@ export const router = createBrowserRouter([
           {
             path: 'perfil',
             element: <Perfil />
-          }
+          },
+
+          
+          { path: 'fiados', element: <Fiados /> }
         ]
       }
     ]

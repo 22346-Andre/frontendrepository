@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Bell, Menu, LogOut, Mic, AlertTriangle, Store, User } from 'lucide-react';
-// 🚨 Voltamos para o react-router moderno que você já usava!
+import { Bell, Menu, LogOut, Mic, AlertTriangle, Store, User, Moon, Sun, Palette } from 'lucide-react'; // 🟢 Ícones importados
 import { Link } from 'react-router'; 
 import { Button } from '../components/ui/button';
 import {
@@ -12,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
 import { useAuth } from '../contexts/auth-context';
+import { useTheme } from '../contexts/theme-context'; // 
 import { VoiceCommandsHelp } from './voice-commands-help';
 import { useVoiceCommand } from '../hooks/useVoiceCommand';
 import { produtoService, Produto } from '../services/produto.service';
@@ -22,6 +22,7 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme(); // 🟢 Usa o tema atual
   const { toggleListening, isListening, isSupported } = useVoiceCommand();
   
   const [alertas, setAlertas] = useState<Produto[]>([]);
@@ -40,27 +41,27 @@ export function Header({ onMenuClick }: HeaderProps) {
   };
 
   return (
-    <header className="h-16 border-b bg-white px-4 flex items-center justify-between sticky top-0 z-40">
+    <header className="h-16 border-b bg-card border-border px-4 flex items-center justify-between sticky top-0 z-40">
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="lg:hidden"
+          className="lg:hidden text-foreground"
         >
           <Menu className="h-5 w-5" />
         </Button>
         
-        {/* 🚀 LOGO (ÍCONE VETORIAL À PROVA DE FALHAS) */}
+        {/* LOGO */}
         <div className="flex items-center gap-3">
-          <div className="bg-blue-600 p-2 rounded-xl shadow-sm flex items-center justify-center">
-            <Store className="h-5 w-5 text-white" />
+          <div className="bg-primary p-2 rounded-xl shadow-sm flex items-center justify-center">
+            <Store className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="hidden md:block flex-col">
-            <h2 className="font-extrabold text-xl text-gray-900 leading-none">
+            <h2 className="font-extrabold text-xl text-foreground leading-none">
               {user?.nomeFantasia || 'EstoqueMax'}
             </h2>
-            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">
+            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">
               Gestão de Estoque
             </p>
           </div>
@@ -75,8 +76,8 @@ export function Header({ onMenuClick }: HeaderProps) {
             onClick={toggleListening}
             className={`relative hidden sm:flex items-center justify-center h-9 px-4 rounded-full text-sm font-semibold transition-all duration-300 shadow-sm ${
               isListening 
-                ? 'bg-red-500 hover:bg-red-600 text-white ring-4 ring-red-500/30 shadow-red-500/50' 
-                : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 hover:border-blue-300' 
+                ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground ring-4 ring-destructive/30 shadow-destructive/50' 
+                : 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20' 
             }`}
             title="Assistente Virtual J.A.R.V.I.S"
           >
@@ -85,50 +86,59 @@ export function Header({ onMenuClick }: HeaderProps) {
           </button>
         )}
 
-        {/* Botão de Ajuda de Comandos de Voz */}
         <div className="hidden lg:block">
           <VoiceCommandsHelp />
         </div>
 
-        {/* Linha Divisória */}
-        <div className="h-6 w-px bg-gray-200 hidden sm:block mx-1"></div>
+        <div className="h-6 w-px bg-border hidden sm:block mx-1"></div>
 
-        {/* 🔔 SININHO DINÂMICO */}
+        {/* 🟢 SELETOR DE TEMAS */}
+        <div className="hidden sm:flex bg-muted rounded-full p-1 border border-border">
+          <button onClick={() => setTheme('light')} className={`p-1.5 rounded-full transition-colors ${theme === 'light' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`} title="Tema Claro">
+            <Sun className="h-4 w-4" />
+          </button>
+          <button onClick={() => setTheme('dark')} className={`p-1.5 rounded-full transition-colors ${theme === 'dark' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`} title="Tema Escuro">
+            <Moon className="h-4 w-4" />
+          </button>
+          <button onClick={() => setTheme('dracula')} className={`p-1.5 rounded-full transition-colors ${theme === 'dracula' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`} title="Tema Dracula">
+            <Palette className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* SININHO DINÂMICO */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative hover:bg-gray-100 rounded-full">
-              <Bell className="h-5 w-5 text-gray-600" />
+            <Button variant="ghost" size="icon" className="relative hover:bg-accent text-foreground rounded-full">
+              <Bell className="h-5 w-5" />
               {alertas.length > 0 && (
-                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full border border-white animate-pulse" />
+                <span className="absolute top-1 right-1 h-2 w-2 bg-destructive rounded-full border border-background animate-pulse" />
               )}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80">
+          <DropdownMenuContent align="end" className="w-80 bg-popover text-popover-foreground border-border">
             <DropdownMenuLabel>Notificações ({alertas.length})</DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-border" />
             <div className="max-h-96 overflow-y-auto">
-              
               {alertas.length === 0 ? (
                 <div className="p-6 text-center">
-                  <p className="text-sm font-medium text-green-600">Tudo em dia! ✅</p>
-                  <p className="text-xs text-gray-500 mt-1">Nenhum produto com estoque crítico.</p>
+                  <p className="text-sm font-medium text-green-500">Tudo em dia! ✅</p>
+                  <p className="text-xs text-muted-foreground mt-1">Nenhum produto com estoque crítico.</p>
                 </div>
               ) : (
                 alertas.map((produto) => (
-                  <DropdownMenuItem key={produto.id} className="p-3 cursor-default">
+                  <DropdownMenuItem key={produto.id} className="p-3 cursor-default hover:bg-accent">
                     <div className="flex items-start gap-3">
                       <AlertTriangle className="h-4 w-4 text-amber-500 mt-1 flex-shrink-0" />
                       <div className="flex flex-col gap-1">
-                        <p className="text-sm font-medium text-gray-800">Atenção: {produto.nome}</p>
-                        <p className="text-xs text-gray-500">
-                          Restam apenas <span className="font-bold text-red-600">{produto.quantidade}</span> no estoque!
+                        <p className="text-sm font-medium text-foreground">Atenção: {produto.nome}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Restam apenas <span className="font-bold text-destructive">{produto.quantidade}</span> no estoque!
                         </p>
                       </div>
                     </div>
                   </DropdownMenuItem>
                 ))
               )}
-
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -136,28 +146,23 @@ export function Header({ onMenuClick }: HeaderProps) {
         {/* MENU MINHA CONTA */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-2 pl-2 hover:bg-gray-100 rounded-full">
-              <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold shadow-inner">
+            <Button variant="ghost" className="gap-2 pl-2 hover:bg-accent rounded-full">
+              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold shadow-inner">
                 {user?.nome ? user.nome.charAt(0).toUpperCase() : 'U'}
               </div>
-              <span className="hidden md:inline font-medium text-gray-700">{user?.nome}</span>
+              <span className="hidden md:inline font-medium text-foreground">{user?.nome}</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel className="text-gray-500 text-xs uppercase tracking-wider">Ações da Conta</DropdownMenuLabel>
-            
-            {/* 🚨 BOTAO: MEU PERFIL */}
+          <DropdownMenuContent align="end" className="w-48 bg-popover text-popover-foreground border-border">
+            <DropdownMenuLabel className="text-muted-foreground text-xs uppercase tracking-wider">Ações da Conta</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link to="/perfil" className="cursor-pointer flex items-center w-full font-medium text-gray-800 hover:bg-gray-100">
-                <User className="mr-2 h-4 w-4 text-gray-500" />
+              <Link to="/perfil" className="cursor-pointer flex items-center w-full font-medium hover:bg-accent">
+                <User className="mr-2 h-4 w-4 text-muted-foreground" />
                 Meu Perfil
               </Link>
             </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-            
-            {/* SAIR DO SISTEMA */}
-            <DropdownMenuItem onClick={logout} className="text-red-600 cursor-pointer font-medium hover:bg-red-50 focus:bg-red-50 focus:text-red-700">
+            <DropdownMenuSeparator className="bg-border" />
+            <DropdownMenuItem onClick={logout} className="text-destructive cursor-pointer font-medium hover:bg-destructive/10">
               <LogOut className="mr-2 h-4 w-4" />
               Sair do Sistema
             </DropdownMenuItem>

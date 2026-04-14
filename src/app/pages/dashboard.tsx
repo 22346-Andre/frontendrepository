@@ -8,7 +8,7 @@ import { VoiceCommandsHelp } from '../components/voice-commands-help';
 import { dashboardService } from '../services/dashboard.service';
 import { produtoService, Produto } from '../services/produto.service';
 import { toast } from 'sonner';
-import api from '../services/api'; // Para buscar as perdas
+import api from '../services/api';
 
 interface DashboardStats {
   capitalImobilizado: number;
@@ -27,8 +27,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [acessoFinanceiroNegado, setAcessoFinanceiroNegado] = useState(false);
   
-  // 🟢 NOVO: Estado para armazenar o valor total de perdas
+  // 🟢 NOVO: Estados para os dados REAIS do gráfico
   const [prejuizoTotal, setPrejuizoTotal] = useState(0);
+  const [dadosGraficoPerdas, setDadosGraficoPerdas] = useState<{ mes: string; valor: number }[]>([]);
 
   useEffect(() => {
     carregarDados();
@@ -58,16 +59,55 @@ export default function Dashboard() {
       setProdutosBaixoEstoque(produtosCriticos);
     } catch (error) {}
 
-    // 🟢 NOVO: Busca movimentações para calcular o prejuízo no Frontend (temporário até ter endpoint específico)
+    // 🟢 LÓGICA CORRIGIDA: Ler datas e somar por mês real
     try {
-      const resMovs = await api.get('/movimentacoes'); // Ajuste a rota se necessário
+      const resMovs = await api.get('/movimentacoes'); 
       const perdas = resMovs.data.filter((m: any) => m.tipo === 'QUEBRA_PERDA');
-      let total = 0;
+      
+      let totalAcumulado = 0;
+      
+      // Cria um objeto para agrupar as perdas por mês (Ex: { "1": 500, "2": 0, "3": 1200 })
+      // Inicializamos os últimos 3 meses (ou os meses do ano) a zero.
+      const perdasPorMes: { [key: string]: number } = {};
+      const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
+      // Inicializa os últimos 3 meses para aparecerem sempre no gráfico (mesmo vazios)
+      const dataAtual = new Date();
+      for (let i = 2; i >= 0; i--) {
+        const mesIndex = new Date(dataAtual.getFullYear(), dataAtual.getMonth() - i, 1).getMonth();
+        perdasPorMes[nomesMeses[mesIndex]] = 0;
+      }
+
       perdas.forEach((p: any) => {
          const custo = p.produto?.precoCusto || 0;
-         total += (custo * p.quantidade);
+         const valorPerdido = custo * p.quantidade;
+         totalAcumulado += valorPerdido;
+
+         // Descobrir qual é o mês desta perda específica
+         if (p.dataMovimentacao) {
+             const dataPerda = new Date(p.dataMovimentacao);
+             const nomeDoMes = nomesMeses[dataPerda.getMonth()];
+             
+             // Se este mês já estiver no objeto, soma o valor. Senão, cria a entrada.
+             if (perdasPorMes[nomeDoMes] !== undefined) {
+                 perdasPorMes[nomeDoMes] += valorPerdido;
+             } else {
+                 // Caso queira mostrar meses muito antigos que não estão nos últimos 3
+                 perdasPorMes[nomeDoMes] = valorPerdido;
+             }
+         }
       });
-      setPrejuizoTotal(total);
+
+      // Converter o objeto no formato de Array que o Recharts exige
+      // Ex: [ { mes: 'Fev', valor: 0 }, { mes: 'Mar', valor: 0 }, { mes: 'Abr', valor: 3503 } ]
+      const chartData = Object.keys(perdasPorMes).map(mesKey => ({
+          mes: mesKey,
+          valor: perdasPorMes[mesKey]
+      }));
+
+      setPrejuizoTotal(totalAcumulado);
+      setDadosGraficoPerdas(chartData);
+
     } catch (error) {
       // Ignora silenciosamente se a rota ainda não existir
     }
@@ -96,15 +136,6 @@ export default function Dashboard() {
     ];
   };
 
-  // 🟢 NOVO: Dados fictícios para o gráfico de perdas (Até ser integrado 100% com Java)
-  const formatarDadosPerdas = () => {
-    return [
-      { mes: 'Jan', valor: prejuizoTotal * 0.2 },
-      { mes: 'Fev', valor: prejuizoTotal * 0.5 },
-      { mes: 'Atual', valor: prejuizoTotal },
-    ];
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -123,7 +154,6 @@ export default function Dashboard() {
         <p className="text-gray-600">Visão geral e inteligência do seu estoque</p>
       </div>
 
-      {/* Cartões do Topo (Mantidos iguais ao seu código original) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="shadow-sm border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -134,7 +164,7 @@ export default function Dashboard() {
             {acessoFinanceiroNegado ? (
               <div className="flex items-center text-gray-400 mt-2"><Lock className="h-5 w-5 mr-2" /><span className="text-sm font-medium">Acesso Restrito</span></div>
             ) : (
-              <><div className="text-2xl font-black text-gray-900">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(stats.capitalImobilizado)}</div><p className="text-xs text-gray-500 font-medium mt-1">Valor total em prateleira</p></>
+              <><div className="text-2xl font-black text-foreground">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(stats.capitalImobilizado)}</div><p className="text-xs text-muted-foreground font-medium mt-1">Valor total em prateleira</p></>
             )}
           </CardContent>
         </Card>
@@ -148,7 +178,7 @@ export default function Dashboard() {
             {acessoFinanceiroNegado ? (
               <div className="flex items-center text-gray-400 mt-2"><Lock className="h-5 w-5 mr-2" /><span className="text-sm font-medium">Acesso Restrito</span></div>
             ) : (
-              <><div className="text-2xl font-black text-gray-900">{stats.giroEstoque}x</div><p className="text-xs text-gray-500 font-medium mt-1">Giro nos últimos 30 dias</p></>
+              <><div className="text-2xl font-black text-foreground">{stats.giroEstoque}x</div><p className="text-xs text-muted-foreground font-medium mt-1">Giro nos últimos 30 dias</p></>
             )}
           </CardContent>
         </Card>
@@ -159,8 +189,8 @@ export default function Dashboard() {
             <Package className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black text-gray-900">{stats.totalProdutos}</div>
-            <p className="text-xs text-gray-500 font-medium mt-1">Itens cadastrados</p>
+            <div className="text-2xl font-black text-foreground">{stats.totalProdutos}</div>
+            <p className="text-xs text-muted-foreground font-medium mt-1">Itens cadastrados</p>
           </CardContent>
         </Card>
 
@@ -171,15 +201,13 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-black text-red-600">{stats.produtosCriticos}</div>
-            <p className="text-xs text-gray-500 font-medium mt-1">Estoque crítico / baixo</p>
+            <p className="text-xs text-muted-foreground font-medium mt-1">Estoque crítico / baixo</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* 🟢 TORNAMOS A GRID DE 2 PARA 3 COLUNAS PARA CABER O GRÁFICO NOVO */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Gráfico 1: Curva ABC */}
         <Card className="shadow-md border-t-4 border-t-indigo-500 lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-indigo-900 text-lg">
@@ -202,12 +230,11 @@ export default function Dashboard() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[220px] text-gray-400 bg-gray-50 rounded">Sem dados</div>
+              <div className="flex items-center justify-center h-[220px] text-gray-400 bg-muted rounded">Sem dados</div>
             )}
           </CardContent>
         </Card>
 
-        {/* 🟢 Gráfico 2: NOVO - Análise de Perdas */}
         <Card className="shadow-md border-t-4 border-t-red-500 lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-red-900 text-lg">
@@ -216,11 +243,12 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {acessoFinanceiroNegado ? (
-               <div className="flex items-center justify-center h-[220px] text-gray-400 bg-gray-50 rounded">Acesso Negado</div>
+               <div className="flex items-center justify-center h-[220px] text-gray-400 bg-muted rounded">Acesso Negado</div>
             ) : (
               <>
                 <ResponsiveContainer width="100%" height={170}>
-                  <BarChart data={formatarDadosPerdas()}>
+                  {/* 🟢 O Gráfico agora consome o state de dados reais */}
+                  <BarChart data={dadosGraficoPerdas}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="mes" fontSize={12} />
                     <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} cursor={{fill: '#fef2f2'}} />
@@ -228,7 +256,7 @@ export default function Dashboard() {
                   </BarChart>
                 </ResponsiveContainer>
                 <div className="mt-2 text-center">
-                  <span className="text-xs text-gray-500 uppercase tracking-widest font-bold">Total Acumulado</span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Total Acumulado</span>
                   <p className="text-xl font-black text-red-600">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(prejuizoTotal)}</p>
                 </div>
               </>
@@ -236,7 +264,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Bloco 3: Reposição de Estoque */}
         <Card className="shadow-md border-t-4 border-t-orange-500 lg:col-span-1">
           <CardHeader>
             <CardTitle className="text-orange-900 flex items-center gap-2 text-lg">
@@ -246,7 +273,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
               {produtosBaixoEstoque.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+                <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
                   <CheckCircle className="h-10 w-10 text-green-500 mb-2" />
                   <p className="font-bold text-green-700">Tudo sob controle!</p>
                 </div>

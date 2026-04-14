@@ -11,7 +11,7 @@ interface Relatorio {
   descricao: string;
   icone: any;
   tipo: string;
-  cor: string;
+  cor: 'blue' | 'purple' | 'red' | 'orange' | 'green' | 'emerald';
   metodo: (inicio?: string, fim?: string) => Promise<void>;
 }
 
@@ -84,50 +84,53 @@ export default function Relatorios() {
     }
   };
 
-  const getCorClasses = (cor: string) => {
-    const cores: { [key: string]: { bg: string; icon: string; border: string } } = {
-      blue: { bg: 'bg-blue-50', icon: 'text-blue-600', border: 'border-blue-200' },
-      purple: { bg: 'bg-purple-50', icon: 'text-purple-600', border: 'border-purple-200' },
-      red: { bg: 'bg-red-50', icon: 'text-red-600', border: 'border-red-200' },
-      orange: { bg: 'bg-orange-50', icon: 'text-orange-600', border: 'border-orange-200' },
-      green: { bg: 'bg-green-50', icon: 'text-green-600', border: 'border-green-200' },
-      emerald: { bg: 'bg-emerald-50', icon: 'text-emerald-600', border: 'border-emerald-200' }
+  // 🟢 NOVA FUNÇÃO: Adaptada ao sistema de temas.
+  // Usa rgba para garantir que os tons de fundo são suaves em qualquer tema (claro ou escuro)
+  // e mantém a cor viva no texto/ícone.
+  const getCorClasses = (cor: Relatorio['cor']) => {
+    const map = {
+      blue: { bg: 'bg-blue-500/10', text: 'text-blue-500', border: 'border-blue-500/20', hoverBorder: 'hover:border-blue-500/50' },
+      purple: { bg: 'bg-purple-500/10', text: 'text-purple-500', border: 'border-purple-500/20', hoverBorder: 'hover:border-purple-500/50' },
+      red: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'border-red-500/20', hoverBorder: 'hover:border-red-500/50' },
+      orange: { bg: 'bg-orange-500/10', text: 'text-orange-500', border: 'border-orange-500/20', hoverBorder: 'hover:border-orange-500/50' },
+      green: { bg: 'bg-green-500/10', text: 'text-green-500', border: 'border-green-500/20', hoverBorder: 'hover:border-green-500/50' },
+      emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-500', border: 'border-emerald-500/20', hoverBorder: 'hover:border-emerald-500/50' }
     };
-    return cores[cor] || cores.blue;
+    return map[cor] || map.blue;
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-foreground">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">Central de Relatórios</h1>
-          <p className="text-gray-600">Exporte relatórios completos em PDF</p>
+          <p className="text-muted-foreground">Exporte relatórios completos em PDF</p>
         </div>
 
         {/* 🟢 COMPONENTE DE FILTRO DE DATA */}
-        <Card className="bg-white border-gray-200 shadow-sm w-full md:w-auto">
+        <Card className="bg-card border-border shadow-sm w-full md:w-auto">
           <CardContent className="p-4 flex flex-col sm:flex-row items-center gap-4">
-            <div className="flex items-center gap-2 text-gray-700 font-medium">
-              <Calendar className="h-5 w-5 text-blue-600" />
+            <div className="flex items-center gap-2 text-foreground font-medium">
+              <Calendar className="h-5 w-5 text-primary" />
               Filtrar Período:
             </div>
             <div className="flex items-center gap-2">
               <input 
                 type="date" 
-                className="flex h-9 w-full rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-primary text-foreground [color-scheme:light_dark]"
                 value={dataInicio}
                 onChange={(e) => setDataInicio(e.target.value)}
               />
-              <span className="text-gray-500">até</span>
+              <span className="text-muted-foreground">até</span>
               <input 
                 type="date" 
-                className="flex h-9 w-full rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-primary text-foreground [color-scheme:light_dark]"
                 value={dataFim}
                 onChange={(e) => setDataFim(e.target.value)}
               />
             </div>
             {(dataInicio || dataFim) && (
-              <Button variant="ghost" size="sm" onClick={() => {setDataInicio(''); setDataFim('');}} className="text-red-500 hover:text-red-700">
+              <Button variant="ghost" size="sm" onClick={() => {setDataInicio(''); setDataFim('');}} className="text-destructive hover:text-destructive hover:bg-destructive/10">
                 Limpar
               </Button>
             )}
@@ -137,47 +140,47 @@ export default function Relatorios() {
 
       {/* Cards de Estatísticas Rápidas */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+        <Card className="bg-card border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Relatórios Disponíveis</CardTitle>
-            <FileText className="h-4 w-4 text-blue-600" />
+            <FileText className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{relatorios.length}</div>
-            <p className="text-xs text-gray-600">Tipos de relatórios</p>
+            <p className="text-xs text-muted-foreground">Tipos de relatórios</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-card border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Download Automático</CardTitle>
-            <Download className="h-4 w-4 text-green-600" />
+            <Download className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">PDF</div>
-            <p className="text-xs text-gray-600">Formato profissional</p>
+            <p className="text-xs text-muted-foreground">Formato profissional</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-card border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Geração</CardTitle>
-            <TrendingUp className="h-4 w-4 text-purple-600" />
+            <TrendingUp className="h-4 w-4 text-purple-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Instantânea</div>
-            <p className="text-xs text-gray-600">Em tempo real</p>
+            <p className="text-xs text-muted-foreground">Em tempo real</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-card border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Dados Atualizados</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-orange-600" />
+            <CheckCircle2 className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">100%</div>
-            <p className="text-xs text-gray-600">Informações reais</p>
+            <p className="text-xs text-muted-foreground">Informações reais</p>
           </CardContent>
         </Card>
       </div>
@@ -185,30 +188,30 @@ export default function Relatorios() {
       {/* Grid de Relatórios */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {relatorios.map((relatorio) => {
-          const cores = getCorClasses(relatorio.cor);
+          const temaCores = getCorClasses(relatorio.cor);
           const Icone = relatorio.icone;
           const estaGerando = gerando === relatorio.tipo;
 
           return (
-            <Card key={relatorio.id} className={`${cores.bg} ${cores.border} border-2 hover:shadow-lg transition-shadow`}>
+            <Card key={relatorio.id} className={`bg-card ${temaCores.border} border-2 hover:shadow-md transition-all duration-200 ${temaCores.hoverBorder}`}>
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div className={`h-12 w-12 rounded-lg ${cores.bg} border-2 ${cores.border} flex items-center justify-center`}>
-                    <Icone className={`h-6 w-6 ${cores.icon}`} />
+                  <div className={`h-12 w-12 rounded-lg ${temaCores.bg} flex items-center justify-center`}>
+                    <Icone className={`h-6 w-6 ${temaCores.text}`} />
                   </div>
-                  <FileText className={`h-5 w-5 ${cores.icon} opacity-50`} />
+                  <FileText className={`h-5 w-5 ${temaCores.text} opacity-30`} />
                 </div>
                 <CardTitle className="mt-4 text-lg">{relatorio.titulo}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-sm text-gray-600 min-h-[40px]">
+                <p className="text-sm text-muted-foreground min-h-[40px] leading-relaxed">
                   {relatorio.descricao}
                 </p>
                 
                 <Button
                   onClick={() => handleGerarRelatorio(relatorio)}
                   disabled={estaGerando}
-                  className="w-full gap-2"
+                  className="w-full gap-2 transition-colors duration-200"
                   variant={estaGerando ? "secondary" : "default"}
                 >
                   {estaGerando ? (
@@ -230,18 +233,18 @@ export default function Relatorios() {
       </div>
 
       {/* Informações e Dicas */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+      <Card className="bg-primary/5 border-primary/20 shadow-sm">
         <CardContent className="pt-6">
           <div className="flex gap-4">
-            <div className="h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <CheckCircle2 className="h-6 w-6 text-white" />
+            <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+              <CheckCircle2 className="h-6 w-6 text-primary-foreground" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg">Sobre os Relatórios</h3>
-              <div className="space-y-1 text-sm text-gray-700">
-                <p>✅ <strong>Formato:</strong> Todos os relatórios são gerados em PDF profissional</p>
-                <p>✅ <strong>Dados em tempo real:</strong> Informações sempre atualizadas do seu estoque</p>
-                <p>✅ <strong>Filtros:</strong> Utilize o filtro de datas acima para limitar o período das movimentações</p>
+              <h3 className="font-semibold text-lg text-foreground">Sobre os Relatórios</h3>
+              <div className="space-y-1 text-sm text-muted-foreground">
+                <p>✅ <strong className="text-foreground">Formato:</strong> Todos os relatórios são gerados em PDF profissional</p>
+                <p>✅ <strong className="text-foreground">Dados em tempo real:</strong> Informações sempre atualizadas do seu estoque</p>
+                <p>✅ <strong className="text-foreground">Filtros:</strong> Utilize o filtro de datas acima para limitar o período das movimentações</p>
               </div>
             </div>
           </div>

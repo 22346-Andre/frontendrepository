@@ -77,7 +77,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foreground focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
             
@@ -90,7 +90,7 @@ export default function Login() {
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 required
-                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foreground focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 

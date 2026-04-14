@@ -74,8 +74,8 @@ export default function Perfil() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Configurações da Conta</h1>
-        <p className="text-gray-500 mt-1">Gerencie suas informações pessoais e credenciais de acesso.</p>
+        <h1 className="text-3xl font-bold text-foreground">Configurações da Conta</h1>
+        <p className="text-muted-foreground mt-1">Gerencie suas informações pessoais e credenciais de acesso.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -89,18 +89,18 @@ export default function Perfil() {
                   {user?.nome ? user.nome.charAt(0).toUpperCase() : 'U'}
                 </span>
               </div>
-              <h2 className="text-xl font-bold text-gray-900">{user?.nome}</h2>
+              <h2 className="text-xl font-bold text-foreground">{user?.nome}</h2>
               
               <div className="mt-4 w-full space-y-3">
-                <div className="flex items-center gap-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                <div className="flex items-center gap-3 text-sm text-gray-600 bg-muted p-3 rounded-lg">
                   <Mail className="h-4 w-4 text-gray-400" />
                   <span className="truncate">{user?.email}</span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                <div className="flex items-center gap-3 text-sm text-gray-600 bg-muted p-3 rounded-lg">
                   <ShieldCheck className="h-4 w-4 text-green-500" />
                   <span className="font-semibold text-green-700">{getCargoFormatado(user?.role)}</span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                <div className="flex items-center gap-3 text-sm text-gray-600 bg-muted p-3 rounded-lg">
                   <Building className="h-4 w-4 text-purple-500" />
                   <span className="font-medium text-purple-700">{user?.nomeFantasia || 'Empresa Vinculada'}</span>
                 </div>

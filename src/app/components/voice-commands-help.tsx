@@ -61,7 +61,7 @@ export function VoiceCommandsHelp() {
     <Dialog>
       <DialogTrigger asChild>
         
-        <button className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 h-9 text-sm font-medium hover:bg-gray-100 gap-2 transition-colors shadow-sm">
+        <button className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-card px-3 h-9 text-sm font-medium hover:bg-gray-100 gap-2 transition-colors shadow-sm">
           <Info className="h-4 w-4" />
           Comandos de Voz
         </button>
@@ -86,7 +86,7 @@ export function VoiceCommandsHelp() {
                 {item.exemplos.map((exemplo, index) => (
                   <div
                     key={index}
-                    className="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center gap-3"
+                    className="p-3 bg-muted rounded-lg border border-border flex items-center gap-3"
                   >
                     <Mic className="h-4 w-4 text-blue-600" />
                     <code className="text-sm font-mono">{exemplo}</code>

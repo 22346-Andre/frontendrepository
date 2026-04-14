@@ -205,7 +205,7 @@ export default function Fornecedores() {
             </TableHeader>
             <TableBody>
               {fornecedoresFiltrados.length === 0 ? (
-                <TableRow><TableCell colSpan={5} className="text-center py-12 text-gray-500">Nenhum fornecedor encontrado.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center py-12 text-muted-foreground">Nenhum fornecedor encontrado.</TableCell></TableRow>
               ) : (
                 fornecedoresFiltrados.map((fornecedor) => (
                   <TableRow key={fornecedor.id}>

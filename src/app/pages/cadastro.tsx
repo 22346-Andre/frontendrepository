@@ -85,7 +85,7 @@ export default function Cadastro() {
                   value={formData.nomeDono}
                   onChange={handleChange}
                   required
-                  className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foregroundfocus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
               
@@ -98,7 +98,7 @@ export default function Cadastro() {
                   value={formData.celular}
                   onChange={handleChange}
                   required
-                  className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foreground focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -114,7 +114,7 @@ export default function Cadastro() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foreground focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
               
@@ -128,7 +128,7 @@ export default function Cadastro() {
                   value={formData.senha}
                   onChange={handleChange}
                   required
-                  className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foreground focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -142,7 +142,7 @@ export default function Cadastro() {
                 value={formData.cnpj}
                 onChange={handleChange}
                 required
-                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foreground focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
@@ -155,7 +155,7 @@ export default function Cadastro() {
                 value={formData.razaoSocial}
                 onChange={handleChange}
                 required
-                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foreground focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
@@ -168,7 +168,7 @@ export default function Cadastro() {
                 value={formData.nomeFantasia}
                 onChange={handleChange}
                 required
-                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-muted-foreground focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 

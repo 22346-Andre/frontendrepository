@@ -220,7 +220,7 @@ export default function SugestoesCompra() {
         </CardHeader>
         <CardContent>
           {sugestoes.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-muted-foreground">
               Ótimo trabalho! Nenhum produto está com estoque crítico no momento.
             </div>
           ) : (
