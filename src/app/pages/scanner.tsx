@@ -416,17 +416,34 @@ export default function ScannerPDV() {
                     </div>
                   </div>
 
-                  {/* 🟢 BOTÕES RESPONSIVOS */}
+                  {/* 🟢 BOTÕES RESPONSIVOS - CORES CORRIGIDAS PARA MODO ESCURO */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 w-full">
-                    <Button variant="outline" className="h-12 sm:h-14 border-blue-400 text-blue-700 dark:border-blue-500/50 dark:text-blue-400 dark:hover:bg-blue-900/20 hover:bg-blue-50 w-full" onClick={() => handleFinalizar('ENTRADA')} disabled={carrinho.length === 0}>
+                    {/* Botão de Entrada: Borda Azul Forte no Escuro */}
+                    <Button 
+                      variant="outline" 
+                      className="h-12 sm:h-14 border-blue-400 text-blue-700 dark:border-blue-500 dark:text-blue-400 dark:hover:bg-blue-900/40 hover:bg-blue-50 w-full" 
+                      onClick={() => handleFinalizar('ENTRADA')} 
+                      disabled={carrinho.length === 0}
+                    >
                       <Plus className="mr-2 h-4 w-4" /> Entrada
                     </Button>
                     
-                    <Button variant="outline" className="h-12 sm:h-14 border-red-400 text-red-600 dark:border-red-500/50 dark:text-red-400 dark:hover:bg-red-900/20 hover:bg-red-50 w-full" onClick={() => setModalPerdaAberto(true)} disabled={carrinho.length === 0}>
+                    {/* Botão de Perda: Borda Vermelha Forte no Escuro */}
+                    <Button 
+                      variant="outline" 
+                      className="h-12 sm:h-14 border-red-400 text-red-600 dark:border-red-500 dark:text-red-400 dark:hover:bg-red-900/40 hover:bg-red-50 w-full" 
+                      onClick={() => setModalPerdaAberto(true)} 
+                      disabled={carrinho.length === 0}
+                    >
                       <AlertTriangle className="mr-2 h-4 w-4" /> Perda
                     </Button>
 
-                    <Button className="h-12 sm:h-14 bg-green-500 hover:bg-green-600 text-white shadow-lg w-full" onClick={() => handleFinalizar('SAIDA')} disabled={carrinho.length === 0}>
+                    {/* Botão Vender: Já estava verde e visível, mantive como estava, talvez um leve ajuste de hover */}
+                    <Button 
+                      className="h-12 sm:h-14 bg-green-500 hover:bg-green-600 text-white shadow-lg w-full dark:bg-green-600 dark:hover:bg-green-500" 
+                      onClick={() => handleFinalizar('SAIDA')} 
+                      disabled={carrinho.length === 0}
+                    >
                       <CheckCircle className="mr-2 h-4 w-4" /> Vender
                     </Button>
                   </div>
@@ -446,7 +463,7 @@ export default function ScannerPDV() {
           <Card className="overflow-hidden w-full dark:border-gray-800 dark:bg-gray-900">
             <CardHeader className="border-b dark:border-gray-800">
               <CardTitle className="dark:text-white">Histórico de Transações do Caixa</CardTitle>
-              <CardDescription className="dark:text-gray-400">Compras de múltiplos itens aparecem agrupadas no mesmo recibo.</CardDescription>
+              <CardDescription className="dark:text-gray-400">Compras de múltiplos items aparecem agrupadas no mesmo recibo.</CardDescription>
             </CardHeader>
             <CardContent className="p-0 sm:p-6 w-full">
               {carregandoHistorico ? (
